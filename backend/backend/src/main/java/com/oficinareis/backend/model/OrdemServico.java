@@ -1,48 +1,48 @@
+// PASTA: model
+// ARQUIVO: OrdemServico.java (Substituição COMPLETA)
 package com.oficinareis.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "ordens_servico")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "ordens_servico")
 public class OrdemServico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idOrdem; // <-- Padronizando idOrdem
 
-    private LocalDate data; // data da ordem
-    private String numeroOrdem;
-    private String tipoVeiculo; // carro, moto, barco, caminhão
-    private String modeloMotor;
-    private String serie; // ex: 1.0, 1.8
-    private String tipoPeca; // nova ou usada
-
-    // 🧍 Cliente (muitos → um)
-    @ManyToOne
-    @JoinColumn(name = "id_cliente")
+    // Cliente (ManyToOne)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    // ⚙️ Categoria (muitos → um)
-    @ManyToOne
-    @JoinColumn(name = "id_categoria")
-    private CategoriaVeiculo categoria;
+    // Dados da OS
+    @Column(nullable = false)
+    private String veiculo;
 
-    // 🧩 Peças (muitos ↔ muitos)
-    @ManyToMany
-    @JoinTable(name = "ordem_pecas", joinColumns = @JoinColumn(name = "id_ordem"), inverseJoinColumns = @JoinColumn(name = "id_peca"))
-    private List<Peca> pecas;
+    private String descricaoServico;
 
-    // 🧰 Serviços (muitos ↔ muitos)
-    @ManyToMany
-    @JoinTable(name = "ordem_servicos_detalhes", joinColumns = @JoinColumn(name = "id_ordem"), inverseJoinColumns = @JoinColumn(name = "id_servico"))
-    private List<Servico> servicos;
+    // Valores (Mão de obra e Total calculado)
+    private Double valorMaoDeObra;
+    private Double valorTotal;
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ABERTA;
+
+    private LocalDateTime dataAbertura = LocalDateTime.now();
+    private LocalDateTime dataFechamento;
+
+    // Relacionamento com PEÇAS: OneToMany através da tabela ItemOrdemServico
+    // PRECISA da classe ItemOrdemServico.java (e Status.java)
+    @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ItemOrdemServico> itens;
 }

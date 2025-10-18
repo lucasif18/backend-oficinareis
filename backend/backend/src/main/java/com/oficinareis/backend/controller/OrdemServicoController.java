@@ -1,55 +1,53 @@
 package com.oficinareis.backend.controller;
 
+import com.oficinareis.backend.model.ItemOrdemServico;
 import com.oficinareis.backend.model.OrdemServico;
 import com.oficinareis.backend.repository.OrdemServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ordens-servico")
+@RequestMapping("/ordens") // Mapeamento simplificado
 @CrossOrigin(origins = "*")
 public class OrdemServicoController {
 
     @Autowired
     private OrdemServicoRepository ordemServicoRepository;
 
+    // 1. LISTAR TODAS AS OS
     @GetMapping
-    public List<OrdemServico> listar() {
+    public List<OrdemServico> listarTodas() {
         return ordemServicoRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public OrdemServico buscarPorId(@PathVariable Long id) {
-        return ordemServicoRepository.findById(id).orElse(null);
-    }
-
+    // 2. ABRIR NOVA OS (Com lógica de cálculo)
     @PostMapping
-    public OrdemServico criar(@RequestBody OrdemServico ordemServico) {
-        return ordemServicoRepository.save(ordemServico);
-    }
+    public ResponseEntity<OrdemServico> abrirOS(@RequestBody OrdemServico os) {
 
-    @PutMapping("/{id}")
-    public OrdemServico atualizar(@PathVariable Long id, @RequestBody OrdemServico ordemAtualizada) {
-        return ordemServicoRepository.findById(id)
-                .map(ordem -> {
-                    ordem.setData(ordemAtualizada.getData());
-                    ordem.setNumeroOrdem(ordemAtualizada.getNumeroOrdem());
-                    ordem.setTipoVeiculo(ordemAtualizada.getTipoVeiculo());
-                    ordem.setModeloMotor(ordemAtualizada.getModeloMotor());
-                    ordem.setSerie(ordemAtualizada.getSerie());
-                    ordem.setTipoPeca(ordemAtualizada.getTipoPeca());
-                    ordem.setCliente(ordemAtualizada.getCliente());
-                    ordem.setCategoria(ordemAtualizada.getCategoria());
-                    ordem.setPecas(ordemAtualizada.getPecas());
-                    ordem.setServicos(ordemAtualizada.getServicos());
-                    return ordemServicoRepository.save(ordem);
-                })
-                .orElse(null);
-    }
+        double totalPecas = 0.0;
 
-    @DeleteMapping("/{id}")
-    public void excluir(@PathVariable Long id) {
-        ordemServicoRepository.deleteById(id);
+        // 1. Calcular o total de peças e ajustar o relacionamento bidirecional
+        if (os.getItens() != null) {
+            for (ItemOrdemServico item : os.getItens()) {
+                // Seta a referência da OS dentro de cada Item, já que o JPA exige
+                item.setOrdemServico(os);
+
+                // Soma o valor de cada item (Quantidade * Preço Unitário)
+                totalPecas += item.getQuantidade() * item.getPrecoUnitarioVenda();
+            }
+        }
+
+        // 2. Calcular o Valor Total Final
+        double valorMaoDeObra = os.getValorMaoDeObra() != null ? os.getValorMaoDeObra() : 0.0;
+        double valorFinal = totalPecas + valorMaoDeObra;
+
+        os.setValorTotal(valorFinal); // Define o valor total na OS
+
+        // 3. Salvar a OS e todos os Itens (graças ao CascadeType.ALL)
+        OrdemServico novaOs = ordemServicoRepository.save(os);
+
+        return ResponseEntity.ok(novaOs);
     }
 }
