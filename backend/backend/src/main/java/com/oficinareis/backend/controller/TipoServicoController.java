@@ -28,4 +28,25 @@ public class TipoServicoController {
         TipoServico novoTipo = tipoServicoRepository.save(tipo);
         return ResponseEntity.ok(novoTipo);
     }
+
+    // PUT: Atualizar Tipo de Serviço por ID
+    @PutMapping("/{id}")
+    public ResponseEntity<TipoServico> atualizarTipoServico(@PathVariable Long id, @RequestBody TipoServico novoTipo) {
+        return tipoServicoRepository.findById(id)
+                .map(tipo -> {
+                    tipo.setNome(novoTipo.getNome());
+                    return ResponseEntity.ok(tipoServicoRepository.save(tipo));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // DELETE: Excluir Tipo de Serviço por ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarTipoServico(@PathVariable Long id) {
+        if (!tipoServicoRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        tipoServicoRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
