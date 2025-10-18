@@ -1,4 +1,4 @@
-@PutMa // ARQUIVO: OrdemServicoController.java (CRUD COMPLETO)
+// ARQUIVO: OrdemServicoController.java (CRUD COMPLETO)
 package com.oficinareis.backend.controller;
 
 import com.oficinareis.backend.model.ItemOrdemServico;
