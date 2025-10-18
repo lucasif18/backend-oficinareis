@@ -34,7 +34,7 @@ public class OrdemServico {
     // ⚙️ Categoria (muitos → um)
     @ManyToOne
     @JoinColumn(name = "id_categoria")
-    private Categoria categoria;
+    private CategoriaVeiculo categoria;
 
     // 🧩 Peças (muitos ↔ muitos)
     @ManyToMany

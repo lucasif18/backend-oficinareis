@@ -1,3 +1,5 @@
+// PASTA: model
+// ARQUIVO: CategoriaVeiculo.java (MUDANÇA DE NOME)
 package com.oficinareis.backend.model;
 
 import jakarta.persistence.*;
@@ -6,19 +8,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "categorias")
+@Table(name = "categorias_veiculo") // <-- Renomeado
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Categoria {
+public class CategoriaVeiculo { // <-- Renomeado
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idCategoria; // <-- Para padronizar
 
     @Column(nullable = false, unique = true)
-    private String nome; // Ex: Moto, Linha Leve 8V, Linha Leve 12V, Linha Pesada Vans, etc.
+    private String nome;
 
     @Column(length = 255)
-    private String descricao; // Informação adicional sobre a categoria
+    private String descricao;
 }

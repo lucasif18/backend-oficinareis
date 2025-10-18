@@ -1,7 +1,7 @@
 package com.oficinareis.backend.controller;
 
-import com.oficinareis.backend.model.Categoria;
-import com.oficinareis.backend.repository.CategoriaRepository;
+import com.oficinareis.backend.model.CategoriaVeiculo;
+import com.oficinareis.backend.repository.CategoriaVeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -12,29 +12,29 @@ import java.util.List;
 public class CategoriaController {
 
     @Autowired
-    private CategoriaRepository categoriaRepository;
+    private CategoriaVeiculoRepository categoriaRepository;
 
     // Listar todas
     @GetMapping
-    public List<Categoria> listarTodas() {
+    public List<CategoriaVeiculo> listarTodas() {
         return categoriaRepository.findAll();
     }
 
     // Buscar por ID
     @GetMapping("/{id}")
-    public Categoria buscarPorId(@PathVariable Long id) {
+    public CategoriaVeiculo buscarPorId(@PathVariable Long id) {
         return categoriaRepository.findById(id).orElse(null);
     }
 
     // Criar nova categoria
     @PostMapping
-    public Categoria criar(@RequestBody Categoria categoria) {
+    public CategoriaVeiculo criar(@RequestBody CategoriaVeiculo categoria) {
         return categoriaRepository.save(categoria);
     }
 
     // Atualizar categoria
     @PutMapping("/{id}")
-    public Categoria atualizar(@PathVariable Long id, @RequestBody Categoria novaCategoria) {
+    public CategoriaVeiculo atualizar(@PathVariable Long id, @RequestBody CategoriaVeiculo novaCategoria) {
         return categoriaRepository.findById(id)
                 .map(c -> {
                     c.setNome(novaCategoria.getNome());
