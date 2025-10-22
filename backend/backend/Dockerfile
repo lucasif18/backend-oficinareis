@@ -1,21 +1,23 @@
-# Usar imagem base do Java 17 (LTS)
-FROM openjdk:17-jdk-slim
-
-# Definir o diretório de trabalho dentro do container
+# ===== Etapa 1: Build do projeto =====
+FROM maven:3.9.8-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copiar o arquivo pom.xml e o código-fonte
+# Copiar os arquivos do projeto
 COPY pom.xml .
 COPY src ./src
 
-# Instalar o Maven dentro da imagem (para build do projeto)
-RUN apt-get update && apt-get install -y maven
-
-# Gerar o .jar do projeto
+# Compilar o projeto (sem rodar testes)
 RUN mvn clean package -DskipTests
 
-# Expor a porta padrão do Spring Boot
+# ===== Etapa 2: Runtime =====
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+
+# Copiar o jar gerado na etapa anterior
+COPY --from=build /app/target/*.jar app.jar
+
+# Expor a porta da aplicação
 EXPOSE 8080
 
-# Executar a aplicação
-CMD ["java", "-jar", "target/backend-0.0.1-SNAPSHOT.jar"]
+# Comando de execução
+ENTRYPOINT ["java", "-jar", "app.jar"]
