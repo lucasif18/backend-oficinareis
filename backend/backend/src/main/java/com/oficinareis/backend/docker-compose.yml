@@ -13,8 +13,9 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
-      # Mapeia a porta 3306 do contêiner para a sua máquina local
-      - "3306:3306"
+      # CORREÇÃO APLICADA AQUI: Mapeia a porta 3306 do contêiner para a porta 3308 da sua máquina local.
+      # Assim, evita o conflito com o XAMPP.
+      - "3308:3306"
     volumes:
       # Persistência dos dados do banco
       - ./mysql_data:/var/lib/mysql
@@ -27,10 +28,10 @@ services:
     depends_on:
       - mysql # Garante que o MySQL suba primeiro
     ports:
-      # Mapeia a porta 8080 do contêiner para a sua máquina local
+      # Mapeia a porta 8080 (não deve haver conflito aqui)
       - "8080:8080"
     environment:
-      # Variáveis de ambiente que sobrescrevem o application.properties
+      # Importante: O Spring Boot se conecta ao serviço "mysql", não à porta local 3308.
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/oficina_reis?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
