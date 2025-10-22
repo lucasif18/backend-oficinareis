@@ -1,29 +1,36 @@
 version: '3.8'
 
 services:
+  # Serviço de Banco de Dados MySQL
   mysql:
     image: mysql:8.0
     container_name: mysql_container
     restart: always
     environment:
+      # Configurações de acesso ao MySQL (usadas pelo Spring Boot)
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: oficina_reis
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
+      # Mapeia a porta 3306 do contêiner para a sua máquina local
       - "3306:3306"
     volumes:
+      # Persistência dos dados do banco
       - ./mysql_data:/var/lib/mysql
 
+  # Serviço da Aplicação Spring Boot
   backend:
-    build: .
+    build: . # Usa o Dockerfile no diretório atual
     container_name: oficina_backend
     restart: always
     depends_on:
-      - mysql
+      - mysql # Garante que o MySQL suba primeiro
     ports:
+      # Mapeia a porta 8080 do contêiner para a sua máquina local
       - "8080:8080"
     environment:
+      # Variáveis de ambiente que sobrescrevem o application.properties
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/oficina_reis?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
