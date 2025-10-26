@@ -1,44 +1,41 @@
+version: '3.8'
+
 services:
-  # Serviço de Banco de Dados MySQL
+  # Banco de Dados MySQL
   mysql:
     image: mysql:8.0
     container_name: mysql_container
     restart: always
     environment:
-      # Configurações de acesso ao MySQL (usadas pelo Spring Boot)
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: oficina_reis
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
-      # CORREÇÃO APLICADA AQUI: Mapeia a porta 3306 do contêiner para a porta 3308 da sua máquina local.
-      # Assim, evita o conflito com o XAMPP.
       - "3308:3306"
     volumes:
-      # Persistência dos dados do banco
       - ./mysql_data:/var/lib/mysql
 
-  # Serviço da Aplicação Spring Boot
+  # Backend - Spring Boot
   backend:
-    build: . # Usa o Dockerfile no diretório atual
+    build: ./backend
     container_name: oficina_backend
     restart: always
     depends_on:
-      - mysql # Garante que o MySQL suba primeiro
+      - mysql
     ports:
-      # Mapeia a porta 8080 (não deve haver conflito aqui)
       - "8080:8080"
     environment:
-      # Importante: O Spring Boot se conecta ao serviço "mysql", não à porta local 3308.
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/oficina_reis?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
 
+  # Frontend - Vue.js
   frontend:
     build: ./frontend
     container_name: oficina_frontend
     restart: always
     ports:
-      - "8081:80"
+      - "5173:5173"
     depends_on:
       - backend
