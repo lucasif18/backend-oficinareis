@@ -33,3 +33,12 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/oficina_reis?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
+
+  frontend:
+    build: ./frontend
+    container_name: oficina_frontend
+    restart: always
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
