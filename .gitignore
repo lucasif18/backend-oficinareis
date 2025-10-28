@@ -1,47 +1,54 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
-
-# Ignorar dados do MySQL
-mysql_data/
-
-# Ignorar dependências do Node e build do Vue
-frontend/node_modules/
-frontend/dist/
-
-# Ignorar arquivos do Java / Maven / Gradle (Spring Boot)
-backend/target/
-
-# Arquivos do sistema
+# ======================================
+# 🔹 GERAL
+# ======================================
+# Arquivos temporários e de sistema
 .DS_Store
+Thumbs.db
 *.log
+*.tmp
+*.swp
+
+# ======================================
+# 🔹 DOCKER
+# ======================================
+# Pastas e volumes gerados pelos containers
+mysql_data/
+logs/
+*.pid
+
+# ======================================
+# 🔹 SPRING BOOT (BACKEND)
+# ======================================
+# Compilados do Maven/Gradle
+backend/target/
+backend/.mvn/
+backend/.gradle/
+backend/build/
+
+# Arquivos de configuração locais
+backend/src/main/resources/application-local.properties
+backend/src/main/resources/application-dev.properties
+
+# ======================================
+# 🔹 VUE.JS (FRONTEND)
+# ======================================
+# Dependências
+frontend/node_modules/
+# Build gerado
+frontend/dist/
+# Cache do editor
+frontend/.vscode/
+frontend/.idea/
+frontend/.env.local
+frontend/.env.*.local
+
+# ======================================
+# 🔹 GIT E CONFIGURAÇÕES
+# ======================================
+# Chaves e arquivos sensíveis
+.env
+*.key
+*.pem
+*.crt
+*.secret
+*.bak
