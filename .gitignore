@@ -31,3 +31,17 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignorar dados do MySQL
+mysql_data/
+
+# Ignorar dependências do Node e build do Vue
+frontend/node_modules/
+frontend/dist/
+
+# Ignorar arquivos do Java / Maven / Gradle (Spring Boot)
+backend/target/
+
+# Arquivos do sistema
+.DS_Store
+*.log

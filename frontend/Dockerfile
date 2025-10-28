@@ -1,23 +1,35 @@
+# ==============================
 # Etapa 1 — Build do projeto Vue
+# ==============================
 FROM node:18 AS build-stage
+
+# Define o diretório de trabalho
 WORKDIR /app
 
-# Copia os arquivos de configuração e instala dependências
+# Copia os arquivos de dependência e instala
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
-# Copia o restante dos arquivos e faz o build
+# Copia o restante do código e executa o build
 COPY . .
 RUN npm run build
 
-# Etapa 2 — Servindo o frontend com Nginx
+# ==============================
+# Etapa 2 — Servindo com Nginx
+# ==============================
 FROM nginx:stable-alpine AS production-stage
 
-# Copia o build do Vue para o diretório padrão do Nginx
+# Remove a página padrão do Nginx
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copia os arquivos do build do Vue
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-# Expõe a porta padrão do Nginx
+# Copia o arquivo de configuração do Nginx (opcional, veja abaixo)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expõe a porta
 EXPOSE 80
 
-# Comando padrão do Nginx
+# Mantém o Nginx rodando
 CMD ["nginx", "-g", "daemon off;"]
