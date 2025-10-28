@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categorias-veiculo")
+@RequestMapping("/categorias-veiculo") // Mapeamento correto
 @CrossOrigin(origins = "*")
 public class CategoriaVeiculoController {
 
@@ -19,6 +19,14 @@ public class CategoriaVeiculoController {
     @GetMapping
     public List<CategoriaVeiculo> listarTodas() {
         return categoriaVeiculoRepository.findAll();
+    }
+    
+    // GET: Buscar Categoria por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoriaVeiculo> buscarPorId(@PathVariable Long id) {
+        return categoriaVeiculoRepository.findById(id)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // POST: Criar nova Categoria
