@@ -1,88 +1,95 @@
-// ARQUIVO: OrdemServicoController.java (CRUD COMPLETO)
 package com.oficinareis.backend.controller;
 
-import com.oficinareis.backend.model.ItemOrdemServico;
 import com.oficinareis.backend.model.OrdemServico;
-import com.oficinareis.backend.model.Status;
-import com.oficinareis.backend.repository.OrdemServicoRepository;
+import com.oficinareis.backend.service.OrdemServicoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
+
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/ordens")
-@CrossOrigin(origins = "*")
+@RequestMapping("/ordens-servico")
+@CrossOrigin(origins = "*") // Permite acesso de aplicações front-end
 public class OrdemServicoController {
 
+    // APENAS injetamos o Service, que contém a lógica de negócio.
+    private final OrdemServicoService ordemServicoService;
+
     @Autowired
-    private OrdemServicoRepository ordemServicoRepository;
-
-    // GET: Listar todas
-    @GetMapping
-    public List<OrdemServico> listarTodas() {
-        return ordemServicoRepository.findAll();
+    public OrdemServicoController(OrdemServicoService ordemServicoService) {
+        this.ordemServicoService = ordemServicoService;
     }
 
-    // NOVO: GET por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<OrdemServico> buscarPorId(@PathVariable Long id) {
-        return ordemServicoRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    // POST: Abrir nova OS (Lógica de cálculo já existente)
+    // Endpoint para criar uma nova OrdemServico
+    // O Service (método save) é responsável por calcular o total, definir data/status inicial e setar a relação do item.
     @PostMapping
-    public ResponseEntity<OrdemServico> abrirOS(@RequestBody OrdemServico os) {
-        double totalPecas = 0.0;
-        if (os.getItens() != null) {
-            for (ItemOrdemServico item : os.getItens()) {
-                item.setOrdemServico(os);
-                totalPecas += item.getQuantidade() * item.getPrecoUnitarioVenda();
-            }
-        }
-        double valorMaoDeObra = os.getValorMaoDeObra() != null ? os.getValorMaoDeObra() : 0.0;
-        os.setValorTotal(totalPecas + valorMaoDeObra);
-        OrdemServico novaOs = ordemServicoRepository.save(os);
-        return ResponseEntity.ok(novaOs);
+    public ResponseEntity<OrdemServico> createOrdemServico(@RequestBody OrdemServico ordemServico) {
+        OrdemServico savedOrdemServico = ordemServicoService.save(ordemServico);
+        return new ResponseEntity<>(savedOrdemServico, HttpStatus.CREATED);
     }
 
-    // NOVO: PUT - Atualizar Status da OS (Exemplo de PUT simplificado)
+    // Endpoint para buscar todas as Ordens de Serviço
+    @GetMapping
+    public ResponseEntity<List<OrdemServico>> getAllOrdensServico() {
+        List<OrdemServico> ordens = ordemServicoService.findAll();
+        return ResponseEntity.ok(ordens);
+    }
+
+    // Endpoint para buscar uma Ordem de Serviço por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<OrdemServico> getOrdemServicoById(@PathVariable Long id) {
+        Optional<OrdemServico> ordem = ordemServicoService.findById(id);
+
+        return ordem.map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Endpoint para atualizar uma Ordem de Serviço existente
+    @PutMapping("/{id}")
+    public ResponseEntity<OrdemServico> updateOrdemServico(@PathVariable Long id, @RequestBody OrdemServico ordemDetails) {
+        return ordemServicoService.findById(id)
+                .map(ordemExistente -> {
+                    // Copia os dados relevantes do corpo da requisição para a entidade existente
+                    ordemExistente.setCliente(ordemDetails.getCliente());
+                    ordemExistente.setVeiculo(ordemDetails.getVeiculo());
+                    ordemExistente.setObservacoes(ordemDetails.getObservacoes());
+                    ordemExistente.setValorMaoDeObra(ordemDetails.getValorMaoDeObra());
+                    ordemExistente.setItens(ordemDetails.getItens()); // Atualiza os itens
+                    
+                    // O Service (no método save) fará o recalculo e validações necessárias.
+                    OrdemServico updatedOrdemServico = ordemServicoService.save(ordemExistente);
+                    return ResponseEntity.ok(updatedOrdemServico);
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    
+    // ENDPOINT EXCLUSIVO: Atualizar Status da OS
     @PutMapping("/{id}/status")
     public ResponseEntity<?> atualizarStatus(@PathVariable Long id, @RequestBody String novoStatus) {
-        return ordemServicoRepository.findById(id)
-                .map(os -> {
-                    try {
-                        Status status = Status.valueOf(novoStatus.toUpperCase());
-                        os.setStatus(status);
-
-                        // Ajustando a data de fechamento
-                        if (status == Status.FINALIZADA || status == Status.CANCELADA) {
-                            os.setDataFechamento(LocalDateTime.now());
-                        } else {
-                            os.setDataFechamento(null);
-                        }
-
-                        return ResponseEntity.ok(ordemServicoRepository.save(os));
-                    } catch (IllegalArgumentException e) {
-                        // Se o status enviado no corpo for inválido
-                        // Retornamos um erro 400 Bad Request
-                        return ResponseEntity.badRequest()
-                                .body("Status inválido. Use ABERTA, EM_ANDAMENTO, FINALIZADA ou CANCELADA.");
-                    }
-                })
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            // Delega a lógica de status e data de fechamento para o Service
+            Optional<OrdemServico> os = ordemServicoService.atualizarStatus(id, novoStatus.trim().replaceAll("\"", ""));
+            
+            return os.map(ResponseEntity::ok)
+                     .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (IllegalArgumentException e) {
+            // Captura a exceção lançada no Service se o status for inválido
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    // NOVO: DELETE: Excluir OS
+
+    // Endpoint para deletar uma Ordem de Serviço por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarOS(@PathVariable Long id) {
-        if (!ordemServicoRepository.existsById(id)) {
+    public ResponseEntity<Void> deleteOrdemServico(@PathVariable Long id) {
+        if (ordemServicoService.findById(id).isPresent()) {
+            ordemServicoService.deleteById(id);
+            return ResponseEntity.noContent().build(); // Retorna 204 No Content
+        } else {
             return ResponseEntity.notFound().build();
         }
-        ordemServicoRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }

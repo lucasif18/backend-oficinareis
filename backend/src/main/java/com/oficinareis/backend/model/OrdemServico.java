@@ -45,4 +45,24 @@ public class OrdemServico {
     // PRECISA da classe ItemOrdemServico.java (e Status.java)
     @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ItemOrdemServico> itens;
+
+    public Object getObservacoes() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getObservacoes'");
+    }
+
+    public void setObservacoes(Object observacoes) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setObservacoes'");
+    }
+
+    public Object getId() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getId'");
+    }
+
+    public void setDataCriacao(LocalDateTime now) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setDataCriacao'");
+    }
 }
