@@ -26,6 +26,10 @@ public class Casal {
     @OneToMany(mappedBy = "casal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Usuario> usuarios;
 
+    @OneToMany(mappedBy = "casal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ItemEstoque> itensEstoque;
+
     // Construtores
     public Casal() {}
 

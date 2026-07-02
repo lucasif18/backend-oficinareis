@@ -12,16 +12,19 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/estoque")
+@RequestMapping("/api/casais/{casalId}/estoque")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // Ajuste conforme a URL do seu Vue 3 se necessário
+@CrossOrigin(origins = "*")
 public class ItemEstoqueController {
 
     private final ItemEstoqueService itemEstoqueService;
 
     @GetMapping
-    public ResponseEntity<List<ItemEstoqueResponseDTO>> listarEstoque() {
-        List<ItemEstoqueResponseDTO> estoque = itemEstoqueService.listarTodos();
-        return ResponseEntity.ok(estoque);
+    public ResponseEntity<List<ItemEstoqueResponseDTO>> listarEstoque(
+            @PathVariable Long casalId) {
+
+        return ResponseEntity.ok(
+                itemEstoqueService.listarPorCasal(casalId)
+        );
     }
 }

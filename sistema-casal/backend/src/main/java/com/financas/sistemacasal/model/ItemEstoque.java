@@ -4,10 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "tb_item_estoque")
+@Table(name = "itens_estoque")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,10 +30,10 @@ public class ItemEstoque {
     private Integer quantidadeMinima;
 
     @Column(length = 20)
-    private String unidadeMedida; 
+    private String unidadeMedida;
 
     @Column(length = 50)
-    private String categoria; 
+    private String categoria;
 
     // Novos campos para a próxima Sprint
     @Column(name = "data_validade")
@@ -42,16 +45,37 @@ public class ItemEstoque {
     @Column(name = "dias_validade_apos_aberto")
     private Integer diasValidadeAposAberto;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "casal_id", nullable = false)
+    @JsonIgnore
+    private Casal casal;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    @Column(length = 50)
+    private String marca;
+
+    @Column(length = 50)
+    private String localArmazenamento;
+
+    @Transient
     public boolean isAbaixoDoMinimo() {
         return this.quantidadeAtual <= this.quantidadeMinima;
     }
 
     // Lógica preliminar para o status calculado
+    @Transient
     public StatusValidade getStatusValidade() {
         if (dataValidade == null) {
             return StatusValidade.INDETERMINADO;
         }
-        
+
         LocalDate hoje = LocalDate.now();
         LocalDate dataLimite = dataValidade;
 
@@ -68,7 +92,7 @@ public class ItemEstoque {
         } else if (hoje.plusDays(3).isAfter(dataLimite)) { // Alerta prévio de 3 dias
             return StatusValidade.PROXIMO_AO_VENCIMENTO;
         }
-        
+
         return StatusValidade.VALIDO;
     }
 }
