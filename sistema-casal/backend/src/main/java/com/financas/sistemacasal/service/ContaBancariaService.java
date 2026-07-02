@@ -17,7 +17,7 @@ public class ContaBancariaService {
     @Transactional(readOnly = true)
     public List<ContaBancariaResponseDTO> listarContasPorUsuario(Long usuarioId) {
         // Busca otimizada trazendo o relacionamento do Banco em um único Join
-        return contaBancariaRepository.findByUsuarioIdWithBanco(usuarioId).stream()
+        return contaBancariaRepository.buscarPorUsuarioComBanco(usuarioId).stream()
                 .map(ContaBancariaResponseDTO::fromEntity)
                 .collect(Collectors.toList());
     }

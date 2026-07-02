@@ -78,7 +78,14 @@ public class EstoqueInteligenteService {
                 ItemEstoque estoque = estoqueRepository.findAll().stream()
                         .filter(e -> e.getNome().equalsIgnoreCase(item.getNome()))
                         .findFirst()
-                        .orElse(new ItemEstoque(null, item.getNome(), 0, 1, item.getCategoria(), null));
+                        .orElseGet(() -> {
+                                     ItemEstoque novoItem = new ItemEstoque();
+                                     novoItem.setNome(item.getNome());
+                                     novoItem.setQuantidadeAtual(0);
+                                     novoItem.setQuantidadeMinima(1);
+                                     novoItem.setCategoria(item.getCategoria());
+                                     return novoItem;
+    });
 
                 estoque.setQuantidadeAtual(estoque.getQuantidadeAtual() + item.getQuantidadeAComprar());
                 estoqueRepository.save(estoque);

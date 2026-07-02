@@ -10,7 +10,7 @@ import com.financas.sistemacasal.model.TipoConta;
 public class ContaBancariaResponseDTO {
     Long id;
     Long usuarioId;
-    TipoConta tipoConta;
+    String tipoConta;
     BigDecimal saldoAtual;
     BancoResponseDTO banco; // Dados do banco aninhados de forma limpa
 
@@ -18,7 +18,7 @@ public class ContaBancariaResponseDTO {
         return new ContaBancariaResponseDTO(
             conta.getId(),
             conta.getUsuario().getId(),
-            conta.getTipoConta(),
+            conta.getTipoConta().name(),
             conta.getSaldoAtual(),
             BancoResponseDTO.fromEntity(conta.getBanco())
         );

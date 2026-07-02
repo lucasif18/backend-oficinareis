@@ -1,11 +1,18 @@
 package com.financas.sistemacasal.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import com.financas.sistemacasal.model.ContaBancaria;
 import java.math.BigDecimal;
 import lombok.Value;
 import com.financas.sistemacasal.model.TipoConta;
 
-@Value
+@Getter
+@Setter
+@NoArgsConstructor
+
 public class ContaBancariaDTO {
     private Long id;
     private String bancoNome;
@@ -13,7 +20,7 @@ public class ContaBancariaDTO {
     private TipoConta tipoConta;
     private BigDecimal saldoAtual;
 
-    public ContaBancariaDTO(Long id, String bancoNome, String bancoCorHex, String tipoConta, BigDecimal saldoAtual) {
+    public ContaBancariaDTO(Long id, String bancoNome, String bancoCorHex, TipoConta tipoConta, BigDecimal saldoAtual) {
         this.id = id;
         this.bancoNome = bancoNome;
         this.bancoCorHex = bancoCorHex;
@@ -40,8 +47,8 @@ public class ContaBancariaDTO {
     public String getBancoCorHex() { return bancoCorHex; }
     public void setBancoCorHex(String bancoCorHex) { this.bancoCorHex = bancoCorHex; }
 
-    public String getTipoConta() { return tipoConta; }
-    public void setTipoConta(String tipoConta) { this.tipoConta = tipoConta; }
+    public TipoConta getTipoConta() { return tipoConta; }
+    public void setTipoConta(TipoConta tipoConta) { this.tipoConta = tipoConta; }
 
     public BigDecimal getSaldoAtual() { return saldoAtual; }
     public void setSaldoAtual(BigDecimal saldoAtual) { this.saldoAtual = saldoAtual; }
