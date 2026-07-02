@@ -2,12 +2,15 @@ package com.financas.sistemacasal.dto;
 
 import com.financas.sistemacasal.model.ContaBancaria;
 import java.math.BigDecimal;
+import lombok.Value;
+import com.financas.sistemacasal.model.TipoConta;
 
+@Value
 public class ContaBancariaDTO {
     private Long id;
     private String bancoNome;
     private String bancoCorHex;
-    private String tipoConta;
+    private TipoConta tipoConta;
     private BigDecimal saldoAtual;
 
     public ContaBancariaDTO(Long id, String bancoNome, String bancoCorHex, String tipoConta, BigDecimal saldoAtual) {

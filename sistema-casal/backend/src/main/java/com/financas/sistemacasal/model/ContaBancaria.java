@@ -3,6 +3,7 @@ package com.financas.sistemacasal.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.financas.sistemacasal.model.TipoConta;
 
 @Entity
 @Table(name = "contas_bancarias")
@@ -22,7 +23,7 @@ public class ContaBancaria {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_conta", nullable = false)
-    private TipoConta tipoConta; 
+    private TipoConta tipoConta;
 
     @Column(name = "saldo_atual", precision = 15, scale = 2)
     private BigDecimal saldoAtual = BigDecimal.ZERO;
@@ -33,26 +34,62 @@ public class ContaBancaria {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    public ContaBancaria() {}
+    public ContaBancaria() {
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Banco getBanco() { return banco; }
-    public void setBanco(Banco banco) { this.banco = banco; }
+    public Usuario getUsuario() {
+        return usuario;
+    }
 
-    public String getTipoConta() { return tipoConta; }
-    public void setTipoConta(String tipoConta) { this.tipoConta = tipoConta; }
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
-    public BigDecimal getSaldoAtual() { return saldoAtual; }
-    public void setSaldoAtual(BigDecimal saldoAtual) { this.saldoAtual = saldoAtual; }
+    public Banco getBanco() {
+        return banco;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setBanco(Banco banco) {
+        this.banco = banco;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public TipoConta getTipoConta() {
+        return tipoConta;
+    }
+
+    public void setTipoConta(TipoConta tipoConta) {
+        this.tipoConta = tipoConta;
+    }
+
+    public BigDecimal getSaldoAtual() {
+        return saldoAtual;
+    }
+
+    public void setSaldoAtual(BigDecimal saldoAtual) {
+        this.saldoAtual = saldoAtual;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

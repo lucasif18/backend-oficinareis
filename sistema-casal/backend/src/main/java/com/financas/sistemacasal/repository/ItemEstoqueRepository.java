@@ -7,6 +7,6 @@ import java.util.List;
 public interface ItemEstoqueRepository
         extends JpaRepository<ItemEstoque, Long> {
 
-    List<ItemEstoque> findByCasalId(Long casalId);
+    List<ItemEstoque> findItensAbaixoDoMinimo();
 
 }

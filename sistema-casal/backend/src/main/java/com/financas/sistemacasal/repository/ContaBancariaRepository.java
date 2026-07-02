@@ -8,5 +8,5 @@ import java.util.List;
 @Repository
 public interface ContaBancariaRepository extends JpaRepository<ContaBancaria, Long> {
     // O Spring Data JPA gera a query automaticamente a partir do nome do método!
-    List<ContaBancaria> findByUsuarioId(Long usuarioId);
+    List<ContaBancaria> findByUsuarioIdWithBanco(Long usuarioId);
 }

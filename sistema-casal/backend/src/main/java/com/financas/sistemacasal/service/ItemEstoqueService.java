@@ -13,16 +13,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemEstoqueService {
 
-    private final ItemEstoqueRepository repository;
+    private final ItemEstoqueRepository itemEstoqueRepository;
 
     @Transactional(readOnly = true)
     public List<ItemEstoqueResponseDTO> listarPorCasal(Long casalId) {
-
-        return repository.findByCasalId(casalId)
-                .stream()
+        return itemEstoqueRepository.findByCasalId(casalId).stream()
                 .map(ItemEstoqueResponseDTO::fromEntity)
-                .toList();
-
+                .collect(Collectors.toList());
     }
-
 }
