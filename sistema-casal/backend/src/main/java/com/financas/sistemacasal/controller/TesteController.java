@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*") // 👈 Dá passe livre para o seu Vue.js entrar!
 public class TesteController {
 
-    @GetMapping("/api/teste")
+    @PostMapping("/api/teste")
     public String teste() {
         return "Backend funcionando!";
     }

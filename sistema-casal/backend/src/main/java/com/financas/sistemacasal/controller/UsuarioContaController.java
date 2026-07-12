@@ -15,7 +15,7 @@ public class UsuarioContaController {
 
     private final ContaBancariaService contaBancariaService;
 
-    @GetMapping("/{id}/contas")
+    @PostMapping("/{id}/contas")
     public ResponseEntity<List<ContaBancariaResponseDTO>> listarContasDoUsuario(@PathVariable Long id) {
         List<ContaBancariaResponseDTO> contas = contaBancariaService.listarContasPorUsuario(id);
         return ResponseEntity.ok(contas);

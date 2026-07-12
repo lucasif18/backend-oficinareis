@@ -21,4 +21,11 @@ public class ItemEstoqueService {
                 .map(ItemEstoqueResponseDTO::fromEntity)
                 .collect(Collectors.toList());
     }
+    /*
+     * public ItemEstoqueResponseDTO salvar(
+     * Long casalId,
+     * ItemEstoqueRequestDTO dto){
+     * return null;
+     * }
+     */
 }

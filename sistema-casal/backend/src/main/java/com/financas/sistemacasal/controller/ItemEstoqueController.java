@@ -20,7 +20,7 @@ public class ItemEstoqueController {
 
     private final ItemEstoqueService itemEstoqueService;
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<List<ItemEstoqueResponseDTO>> listarEstoque(
             @PathVariable Long casalId) {
 

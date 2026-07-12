@@ -15,7 +15,7 @@ public class BancoController {
 
     private final BancoService bancoService;
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<List<BancoResponseDTO>> listarBancos() {
         return ResponseEntity.ok(bancoService.listarTodos());
     }
