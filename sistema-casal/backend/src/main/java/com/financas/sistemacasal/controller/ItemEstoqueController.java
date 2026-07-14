@@ -28,16 +28,15 @@ public class ItemEstoqueController {
             @PathVariable Long casalId) {
 
         return ResponseEntity.ok(
-                itemEstoqueService.listarPorCasal(casalId)
-        );
+                itemEstoqueService.listarPorCasal(casalId));
     }
 
     @PostMapping
-public ResponseEntity<ItemEstoqueResponseDTO> salvar(
-        @RequestBody ItemEstoqueRequestDTO dto) {
+    public ResponseEntity<ItemEstoqueResponseDTO> salvar(
+            @RequestBody ItemEstoqueRequestDTO dto) {
 
-    ItemEstoqueResponseDTO itemSalvo = itemEstoqueService.salvar(dto);
+        ItemEstoqueResponseDTO itemSalvo = itemEstoqueService.salvar(dto);
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(itemSalvo);
-}
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemSalvo);
+    }
 }
