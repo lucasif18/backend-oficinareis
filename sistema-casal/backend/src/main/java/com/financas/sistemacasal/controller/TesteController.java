@@ -1,4 +1,4 @@
-package com.financas.sistemacasal.controller;
+/*package com.financas.sistemacasal.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin; // 👈 Importa a anotação
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,4 +12,4 @@ public class TesteController {
     public String teste() {
         return "Backend funcionando!";
     }
-}
+}*/

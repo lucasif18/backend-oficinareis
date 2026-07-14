@@ -9,12 +9,13 @@ public class ItemEstoqueRequestDTO {
     private Integer quantidadeMinima;
     private String unidadeMedida;
     private String categoria;
-
+    private Long casalId;
     private LocalDate dataValidade;
     private LocalDate dataAbertura;
     private Integer diasValidadeAposAberto;
 
-    public ItemEstoqueRequestDTO() {}
+    public ItemEstoqueRequestDTO() {
+    }
 
     public String getNome() {
         return nome;
